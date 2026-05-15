@@ -359,16 +359,8 @@ function App() {
           </div>
 
           <div className="hero-portrait" aria-label="Dra. Andrea Alves" data-hero-part>
-            <div className="motion-readout motion-readout--top" aria-hidden="true">
-              <span>01</span>
-              <strong>segurança</strong>
-            </div>
             <div className="hero-portrait__mask">
               <img src={portraitPhoto} alt="Dra. Andrea Alves em retrato profissional" />
-            </div>
-            <div className="motion-readout motion-readout--bottom" aria-hidden="true">
-              <span>03</span>
-              <strong>naturalidade</strong>
             </div>
             <div className="hero-portrait__caption">
               <span>Com Dra. Andrea Alves</span>
