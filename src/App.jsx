@@ -18,8 +18,7 @@ import logo from './assets/images/logo-new-CMQBKH-6.jpeg';
 import portraitPhoto from './assets/images/dra-andrea-seria-DR8MG9gh.jpeg';
 
 const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/K5YkdBXKjlr4hZWWsFmiss?mode=gi_t';
-const LEAD_EMAIL = 'draandreaalveshof@gmail.com';
-const FORM_ENDPOINT = `https://formsubmit.co/${LEAD_EMAIL}`;
+const LEAD_ENDPOINT = '/api/submit-lead';
 
 const heroFloaters = [
   {
@@ -158,17 +157,43 @@ function App() {
     if (status !== 'idle') setStatus('idle');
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
+    event.preventDefault();
     const nextErrors = validateLead(formData);
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      event.preventDefault();
       setStatus('error');
       return;
     }
 
     setStatus('saving');
+
+    try {
+      const response = await fetch(LEAD_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          professionalArea: formData.professionalArea.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Lead submission failed');
+      }
+
+      setStatus('success');
+      window.setTimeout(() => {
+        window.location.assign(WHATSAPP_GROUP_URL);
+      }, 700);
+    } catch {
+      setStatus('submit-error');
+    }
   }
 
   return (
@@ -287,11 +312,7 @@ function App() {
               <X size={21} aria-hidden="true" />
             </button>
 
-            <form className="lead-form" action={FORM_ENDPOINT} method="POST" onSubmit={handleSubmit} noValidate>
-              <input type="hidden" name="_subject" value="Nova inscrição - Aula de Toxina Botulínica" />
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_next" value={WHATSAPP_GROUP_URL} />
+            <form className="lead-form" onSubmit={handleSubmit} noValidate>
               <div className="lead-form__heading">
                 <Users size={22} aria-hidden="true" />
                 <div>
@@ -383,6 +404,12 @@ function App() {
               {status === 'error' && (
                 <p className="form-status form-status--error" role="alert">
                   Revise os campos destacados antes de continuar.
+                </p>
+              )}
+
+              {status === 'submit-error' && (
+                <p className="form-status form-status--error" role="alert">
+                  Não foi possível enviar sua inscrição agora. Tente novamente em alguns instantes.
                 </p>
               )}
 

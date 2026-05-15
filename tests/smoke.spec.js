@@ -25,14 +25,45 @@ test('validates the registration drawer before submitting to email', async ({ pa
   await expect(page.getByText(/revise os campos destacados/i)).toBeVisible();
 
   const form = drawer.locator('form');
-  await expect(form).toHaveAttribute('action', /formsubmit\.co\/draandreaalveshof@gmail\.com/);
-  await expect(form.locator('input[name="_next"]')).toHaveValue(whatsappUrl);
+  await expect(form).not.toHaveAttribute('action', /formsubmit/i);
 
   await drawer.getByLabel('Nome').fill('Maria Silva');
   await drawer.getByLabel('E-mail').fill('maria@example.com');
   await drawer.getByLabel('WhatsApp').fill('(11) 99999-9999');
   await drawer.getByLabel('Área de atuação').fill('Biomedicina');
   await expect(drawer.getByRole('button', { name: /enviar inscrição e entrar no grupo/i })).toBeEnabled();
+});
+
+test('submits leads to the local API before redirecting to WhatsApp', async ({ page }) => {
+  let submittedLead;
+
+  await page.route('**/api/submit-lead', async (route) => {
+    submittedLead = route.request().postDataJSON();
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, id: 'lead_test' }),
+    });
+  });
+
+  await page.goto(localUrl);
+  await page.getByRole('button', { name: /entrar no grupo vip/i }).first().click();
+  const drawer = page.getByRole('dialog', { name: /inscrição gratuita/i });
+
+  await drawer.getByLabel('Nome').fill('Maria Silva');
+  await drawer.getByLabel('E-mail').fill('maria@example.com');
+  await drawer.getByLabel('WhatsApp').fill('(11) 99999-9999');
+  await drawer.getByLabel('Área de atuação').fill('Biomedicina');
+  await drawer.getByRole('button', { name: /enviar inscrição e entrar no grupo/i }).click();
+
+  await expect(drawer.getByText(/inscrição enviada/i)).toBeVisible();
+  expect(submittedLead).toEqual({
+    name: 'Maria Silva',
+    email: 'maria@example.com',
+    phone: '(11) 99999-9999',
+    professionalArea: 'Biomedicina',
+  });
+  await expect.poll(() => page.url()).toMatch(whatsappUrl);
 });
 
 test('keeps keyboard focus inside the pre-registration drawer', async ({ page }) => {
