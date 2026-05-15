@@ -1,12 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
-  BadgeCheck,
   CheckCircle2,
-  ChevronRight,
-  ClipboardCheck,
   Crosshair,
-  Layers,
   Leaf,
   MessageCircle,
   PlayCircle,
@@ -19,36 +15,11 @@ import {
 import { useLandingMotion } from './motion.js';
 
 import logo from './assets/images/logo-new-CMQBKH-6.jpeg';
-import consultationPhoto from './assets/images/dra-andrea-1-BYcPPUbz-optimized.jpeg';
 import portraitPhoto from './assets/images/dra-andrea-seria-DR8MG9gh.jpeg';
-import syringePhoto from './assets/images/dra-andrea-seringa-DO3CC2bu.jpeg';
-import standingPhoto from './assets/images/dra-andrea-3-DkLH9xxV.jpeg';
 
 const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/K5YkdBXKjlr4hZWWsFmiss?mode=gi_t';
-
-const triadItems = [
-  {
-    icon: ShieldCheck,
-    label: '01',
-    title: 'Segurança',
-    kicker: 'Critério antes de qualquer ponto',
-    text: 'A aula parte da leitura facial e dos sinais de risco para organizar decisões com mais responsabilidade clínica.',
-  },
-  {
-    icon: Crosshair,
-    label: '02',
-    title: 'Precisão',
-    kicker: 'Marcação como raciocínio, não ritual',
-    text: 'Pontos, dose e estratégia aparecem como consequência do diagnóstico estético e da comunicação com o paciente.',
-  },
-  {
-    icon: Leaf,
-    label: '03',
-    title: 'Naturalidade',
-    kicker: 'Expressão preservada como objetivo',
-    text: 'O resultado desejado é planejado para reduzir excessos e manter coerência com anatomia, expectativa e contexto.',
-  },
-];
+const LEAD_EMAIL = 'draandreaalveshof@gmail.com';
+const FORM_ENDPOINT = `https://formsubmit.co/${LEAD_EMAIL}`;
 
 const heroFloaters = [
   {
@@ -70,70 +41,6 @@ const heroFloaters = [
     icon: Stethoscope,
     label: 'Clínica',
     className: 'hero-floater--clinic',
-  },
-];
-
-const consoleItems = [
-  {
-    icon: ShieldCheck,
-    label: 'segurança',
-    value: 'risco mapeado',
-  },
-  {
-    icon: Crosshair,
-    label: 'precisão',
-    value: 'marcação guiada',
-  },
-  {
-    icon: Leaf,
-    label: 'naturalidade',
-    value: 'expressão preservada',
-  },
-];
-
-const previewCards = [
-  {
-    icon: Stethoscope,
-    title: 'Leitura facial clínica',
-    text: 'Como observar assimetrias, expressão e objetivo antes de escolher a conduta.',
-  },
-  {
-    icon: ClipboardCheck,
-    title: 'Mapa de decisão',
-    text: 'O que considerar para indicação, contraindicação, marcação e orientação.',
-  },
-  {
-    icon: Layers,
-    title: 'Sequência de aplicação',
-    text: 'Uma lógica de atendimento para sair do improviso e ganhar previsibilidade.',
-  },
-  {
-    icon: BadgeCheck,
-    title: 'Resultado responsável',
-    text: 'Naturalidade, comunicação e segurança como parte do mesmo padrão técnico.',
-  },
-];
-
-const galleryItems = [
-  {
-    src: portraitPhoto,
-    title: 'Autoridade clínica',
-    text: 'Presença sóbria e didática para profissionais da estética.',
-  },
-  {
-    src: syringePhoto,
-    title: 'Técnica em foco',
-    text: 'O gesto técnico aparece dentro de um contexto de segurança.',
-  },
-  {
-    src: consultationPhoto,
-    title: 'Raciocínio visual',
-    text: 'Antes da aplicação existe análise, escuta e planejamento.',
-  },
-  {
-    src: standingPhoto,
-    title: 'Experiência guiada',
-    text: 'Aula, avisos e materiais concentrados no Grupo VIP.',
   },
 ];
 
@@ -252,19 +159,16 @@ function App() {
   }
 
   function handleSubmit(event) {
-    event.preventDefault();
     const nextErrors = validateLead(formData);
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
+      event.preventDefault();
       setStatus('error');
       return;
     }
 
     setStatus('saving');
-    window.setTimeout(() => {
-      setStatus('success');
-    }, 420);
   }
 
   return (
@@ -300,13 +204,10 @@ function App() {
             <img src={logo} alt="Dra. Andrea Alves Estética Avançada" />
           </a>
           <nav className="topbar__actions" aria-label="Ações principais">
-            <button className="ghost-link" type="button" onClick={openDrawer}>
-              Pré-cadastro
-            </button>
-            <a className="nav-cta" href={WHATSAPP_GROUP_URL} target="_blank" rel="noreferrer noopener">
+            <button className="nav-cta" type="button" onClick={openDrawer}>
               Grupo VIP
               <ArrowRight size={16} aria-hidden="true" />
-            </a>
+            </button>
           </nav>
         </header>
 
@@ -317,45 +218,26 @@ function App() {
               Aula gratuita para profissionais
             </div>
             <h1 id="hero-title" data-hero-part>
-              <span className="headline-line">Aula ao vivo</span>
+              <span className="headline-line">Aula ao vivo de</span>
               <span className="headline-line">Toxina Botulínica</span>
               <span className="headline-line">gratuita</span>
             </h1>
             <p className="hero__lead" data-hero-part>
-              Entre no Grupo VIP da Dra. Andrea Alves para receber o link da aula, lembretes
-              e conteúdos de aquecimento sobre segurança, precisão e naturalidade.
+              Entre para o Grupo VIP e seja avisado em primeira mão sobre a próxima aula de Botox.
             </p>
             <div className="hero__actions" data-hero-part>
-              <a className="button button--primary" href={WHATSAPP_GROUP_URL} target="_blank" rel="noreferrer noopener">
+              <button className="button button--primary" type="button" onClick={openDrawer}>
                 <MessageCircle size={20} aria-hidden="true" />
                 Entrar no Grupo VIP
-              </a>
+              </button>
               <button className="button button--secondary" type="button" onClick={openDrawer}>
-                Ver pré-cadastro
-                <ChevronRight size={18} aria-hidden="true" />
+                Se inscreva agora
+                <ArrowRight size={18} aria-hidden="true" />
               </button>
             </div>
             <p className="hero__disclaimer" data-hero-part>
               Conteúdo educacional direcionado a profissionais habilitados conforme a legislação vigente.
             </p>
-            <div className="motion-console" aria-hidden="true" data-hero-part>
-              <div className="motion-console__header">
-                <span>mapa da aula</span>
-                <Sparkles size={14} />
-              </div>
-              {consoleItems.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <div className="motion-console__row" key={item.label}>
-                    <Icon size={16} />
-                    <span>{item.label}</span>
-                    <strong>{item.value}</strong>
-                    <i />
-                  </div>
-                );
-              })}
-            </div>
           </div>
 
           <div className="hero-portrait" aria-label="Dra. Andrea Alves" data-hero-part>
@@ -364,7 +246,7 @@ function App() {
             </div>
             <div className="hero-portrait__caption">
               <span>Com Dra. Andrea Alves</span>
-              <strong>Planejamento, técnica e expressão natural.</strong>
+              <strong>28 anos de formação em Farmácia e 7 anos de atuação na área da Estética Avançada.</strong>
             </div>
           </div>
         </div>
@@ -383,161 +265,6 @@ function App() {
             <span>grupo vip</span>
           </div>
         </div>
-      </section>
-
-      <section className="manifesto" aria-labelledby="manifesto-title">
-        <div className="section-kicker" data-reveal>
-          <span>Manifesto</span>
-          <span>01 / 05</span>
-        </div>
-        <h2 id="manifesto-title" data-reveal>
-          Menos improviso. Mais critério clínico.
-        </h2>
-        <p data-reveal>
-          A estética avançada não começa na seringa. Começa na observação, na escuta, na
-          escolha responsável e na técnica aplicada com intenção.
-        </p>
-        <div className="manifesto__rule" aria-hidden="true" />
-      </section>
-
-      <section className="triad" aria-labelledby="triad-title">
-        <div className="triad__stage">
-          <div className="triad__intro" data-reveal>
-            <div className="section-kicker">
-              <span>Triade da aula</span>
-              <span>02 / 05</span>
-            </div>
-            <h2 id="triad-title">Segurança, precisão e naturalidade no mesmo raciocínio.</h2>
-            <p>
-              Três decisões que sustentam uma prática mais organizada: avaliar o contexto,
-              aplicar com intenção e preservar expressão.
-            </p>
-          </div>
-
-          <div className="triad__visual" aria-hidden="true">
-            <div className="triad__scan" />
-            <span>segurança</span>
-            <span>precisão</span>
-          </div>
-
-          <div className="triad__cards">
-            {triadItems.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <article className="triad-card" key={item.title}>
-                  <div className="triad-card__meta">
-                    <span>{item.label}</span>
-                    <span className="triad-card__icon-ring">
-                      <Icon size={24} aria-hidden="true" />
-                    </span>
-                  </div>
-                  <h3>{item.title}</h3>
-                  <strong>{item.kicker}</strong>
-                  <p>{item.text}</p>
-                  <div className="triad-card__track" aria-hidden="true">
-                    <div className="triad-card__progress" />
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="preview" aria-labelledby="preview-title">
-        <div className="section-heading" data-reveal>
-          <div className="section-kicker">
-            <span>Prévia da aula</span>
-            <span>03 / 05</span>
-          </div>
-          <h2 id="preview-title">Uma prévia do que será trabalhado no encontro.</h2>
-        </div>
-
-        <div className="preview-grid">
-          {previewCards.map((card, index) => {
-            const Icon = card.icon;
-
-            return (
-              <article className="preview-card" key={card.title} data-reveal>
-                <span className="preview-card__pulse" aria-hidden="true" />
-                <span className="preview-card__number">{String(index + 1).padStart(2, '0')}</span>
-                <span className="preview-card__icon">
-                  <Icon size={24} aria-hidden="true" />
-                </span>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="motion-gallery" aria-labelledby="gallery-title">
-        <div className="section-heading section-heading--wide" data-reveal>
-          <div className="section-kicker">
-            <span>Presença clínica</span>
-            <span>04 / 05</span>
-          </div>
-          <h2 id="gallery-title">Presença clínica, recortes editoriais e movimento controlado.</h2>
-          <p>
-            A galeria usa os assets reais da marca para sustentar autoridade sem recorrer a
-            imagens genéricas.
-          </p>
-        </div>
-
-        <div className="gallery-rail" aria-label="Galeria da Dra. Andrea Alves">
-          {galleryItems.map((item) => (
-            <figure className="gallery-card" key={item.title} data-reveal>
-              <img src={item.src} alt={`${item.title} da Dra. Andrea Alves`} loading="lazy" decoding="async" />
-              <figcaption>
-                <strong>{item.title}</strong>
-                <span>{item.text}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      <section className="registration-panel" aria-labelledby="registration-title">
-        <div data-reveal>
-          <div className="section-kicker">
-            <span>Pré-cadastro opcional</span>
-            <span>05 / 05</span>
-          </div>
-          <h2 id="registration-title">Prefere deixar seus dados antes de entrar no grupo?</h2>
-          <p>
-            Esta etapa ajuda a avaliar um caminho com pré-cadastro. A ação oficial da campanha
-            continua sendo a entrada no Grupo VIP.
-          </p>
-        </div>
-        <button className="button button--secondary" type="button" onClick={openDrawer} data-reveal>
-          Abrir pré-cadastro
-          <ChevronRight size={18} aria-hidden="true" />
-        </button>
-      </section>
-
-      <section className="final-cta" aria-labelledby="final-title">
-        <div className="final-cta__signal" aria-hidden="true">
-          <MessageCircle size={24} />
-          <Sparkles size={16} />
-          <ArrowRight size={18} />
-        </div>
-        <div>
-          <div className="section-kicker section-kicker--light">
-            <span>Grupo VIP oficial</span>
-            <span>WhatsApp</span>
-          </div>
-          <h2 id="final-title">Receba os avisos da aula pelo canal certo.</h2>
-          <p>
-            Entre no grupo para acompanhar link, lembretes, materiais de aquecimento e próximos
-            passos da campanha.
-          </p>
-        </div>
-        <a className="button button--primary button--light" href={WHATSAPP_GROUP_URL} target="_blank" rel="noreferrer noopener">
-          <MessageCircle size={21} aria-hidden="true" />
-          Entrar no Grupo VIP
-        </a>
       </section>
 
       {drawerOpen && (
@@ -560,12 +287,16 @@ function App() {
               <X size={21} aria-hidden="true" />
             </button>
 
-            <form className="lead-form" onSubmit={handleSubmit} noValidate>
+            <form className="lead-form" action={FORM_ENDPOINT} method="POST" onSubmit={handleSubmit} noValidate>
+              <input type="hidden" name="_subject" value="Nova inscrição - Aula de Toxina Botulínica" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_next" value={WHATSAPP_GROUP_URL} />
               <div className="lead-form__heading">
                 <Users size={22} aria-hidden="true" />
                 <div>
-                  <strong id="lead-drawer-title">Pré-cadastro opcional</strong>
-                  <span>Confira seus dados nesta tela; a entrada real acontece no WhatsApp.</span>
+                  <strong id="lead-drawer-title">Inscrição gratuita</strong>
+                  <span>Preencha seus dados para entrar no Grupo VIP da aula.</span>
                 </div>
               </div>
 
@@ -646,7 +377,7 @@ function App() {
               </label>
 
               <button className="button button--primary form-submit" type="submit" disabled={status === 'saving'}>
-                {status === 'saving' ? 'Validando...' : 'Validar pré-cadastro'}
+                {status === 'saving' ? 'Enviando...' : 'Enviar inscrição e entrar no grupo'}
               </button>
 
               {status === 'error' && (
@@ -659,10 +390,10 @@ function App() {
                 <div className="form-success" role="status">
                   <CheckCircle2 size={22} aria-hidden="true" />
                   <div>
-                    <strong>Dados validados nesta tela.</strong>
-                    <span>Nada foi enviado ou armazenado. Entre no Grupo VIP para receber os avisos reais da campanha.</span>
+                    <strong>Inscrição enviada.</strong>
+                    <span>Você será direcionado para o Grupo VIP no WhatsApp.</span>
                   </div>
-                  <a className="button button--primary" href={WHATSAPP_GROUP_URL} target="_blank" rel="noreferrer noopener">
+                  <a className="button button--primary" href={WHATSAPP_GROUP_URL} rel="noreferrer noopener">
                     <MessageCircle size={18} aria-hidden="true" />
                     Entrar no Grupo VIP
                   </a>
@@ -670,16 +401,16 @@ function App() {
               )}
 
               <p className="form-note">
-                A entrada oficial da campanha acontece pelo botão do Grupo VIP no WhatsApp.
+                Seus dados serão enviados para a equipe da Dra. Andrea Alves. Em seguida, você acessa o grupo oficial no WhatsApp.
               </p>
             </form>
           </aside>
         </div>
       )}
 
-      <a className="floating-whatsapp" href={WHATSAPP_GROUP_URL} target="_blank" rel="noreferrer noopener" aria-label="Entrar no Grupo VIP pelo WhatsApp">
+      <button className="floating-whatsapp" type="button" onClick={openDrawer} aria-label="Entrar no Grupo VIP pelo WhatsApp">
         <MessageCircle size={22} aria-hidden="true" />
-      </a>
+      </button>
 
       <div className="reduced-motion-note" aria-hidden="true">
         <PlayCircle size={16} />
