@@ -93,3 +93,29 @@ test('keeps the selected v2 short after the hero campaign block', async ({ brows
 
   await context.close();
 });
+
+test('exposes production SEO metadata and structured data', async ({ page }) => {
+  await page.goto(localUrl);
+
+  await expect(page).toHaveTitle(/aula gratuita de toxina botulínica/i);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    'content',
+    /próxima aula gratuita de toxina botulínica/i,
+  );
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://dra-andrea-grupo-vip-v2.vercel.app/',
+  );
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    'https://dra-andrea-grupo-vip-v2.vercel.app/og-image.png',
+  );
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
+  const structuredData = await page.locator('script[type="application/ld+json"]').textContent();
+  expect(JSON.parse(structuredData)).toEqual(
+    expect.objectContaining({
+      '@context': 'https://schema.org',
+      '@graph': expect.arrayContaining([expect.objectContaining({ '@type': 'Course' })]),
+    }),
+  );
+});
